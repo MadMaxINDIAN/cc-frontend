@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
+
 // material
 import {
   Container,
@@ -25,6 +27,8 @@ import FiberNewOutlinedIcon from '@material-ui/icons/FiberNewOutlined';
 import Masonry from '@mui/lab/Masonry';
 import MasonryItem from '@mui/lab/MasonryItem';
 // utils
+import Alert from '../../Alert';
+import { newProduct } from '../../../actions/productActions';
 import { fCurrency } from '../../../utils/formatNumber';
 //
 import Label from '../../Label';
@@ -45,16 +49,42 @@ CreateProduct.propTypes = {
   product: PropTypes.object
 };
 
-export default function CreateProduct() {
+function CreateProduct(props) {
   const [product, setProduct] = useState({
     title: '',
     category: '',
     description: ''
   });
+  const [errors, setErrors] = useState({});
   const [images, setImges] = useState([]);
   const [productTypes, setProductTypes] = useState([]);
+  const [alertObject, setAlertObject] = useState({ status: false, msg: '', key: '' });
+
+  useEffect(() => {
+    if (props.errors.unauthorized) {
+      setAlertObject({
+        status: true,
+        msg: props.errors.unauthorized,
+        key: Math.random(),
+        type: 'error'
+      });
+    }
+    if (props.errors.errors) {
+      setErrors({ ...props.errors.errors });
+    }
+  }, [props.errors]);
+
+  const updateAlertState = () => {
+    setAlertObject({
+      status: false,
+      msg: ''
+    });
+  };
 
   const addNewProductType = () => {
+    if (typeof errors.product_types === "string") {
+      setErrors({...errors, product_types: ""});
+    }
     setProductTypes([
       ...productTypes,
       {
@@ -78,6 +108,14 @@ export default function CreateProduct() {
     ]);
   };
 
+  const handleSubmitForm = (e) => {
+    const data = {
+      ...product,
+      product_types: productTypes
+    };
+    props.newProduct(data);
+  };
+
   const handleProductInput = (target) => {
     setProduct({ ...product, [target.id]: target.value });
   };
@@ -90,7 +128,7 @@ export default function CreateProduct() {
 
   const handlePriceInput = (target, index) => {
     const temp = productTypes;
-    temp[index].price[target.id] = target.value;
+    temp[index].price[target.id] = parseInt(target.value, 10);
     setProductTypes([...temp]);
   };
 
@@ -110,6 +148,11 @@ export default function CreateProduct() {
     const temp = productTypes;
     temp.splice(index, 1);
     setProductTypes([...temp]);
+    if (typeof errors.product_types === "object") {
+      const t = errors.product_types;
+      t.splice(index, 1);
+      setErrors({...errors, product_types: t});
+    }
   };
 
   const handleProductImageDelete = (index) => {
@@ -134,6 +177,8 @@ export default function CreateProduct() {
           label="Product Title"
           variant="standard"
           fullWidth
+          error={errors.title && true}
+          helperText={errors.title}
           inputProps={{ style: { fontSize: 25 } }}
           InputLabelProps={{ style: { fontSize: 25 } }}
           onChange={(e) => {
@@ -141,6 +186,7 @@ export default function CreateProduct() {
           }}
         />
       </Stack>
+      {/* {errors && errors.title && <div>{errors.title}</div>} */}
       <br />
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 2, md: 4 }}>
         <TextField
@@ -148,6 +194,8 @@ export default function CreateProduct() {
           label="Category"
           variant="standard"
           fullWidth
+          error={errors.category && true}
+          helperText={errors.category}
           inputProps={{ style: { fontSize: 25 } }}
           InputLabelProps={{ style: { fontSize: 25 } }}
           onChange={(e) => {
@@ -162,6 +210,8 @@ export default function CreateProduct() {
           label="Description"
           variant="standard"
           fullWidth
+          error={errors.description && true}
+          helperText={errors.description}
           inputProps={{ style: { fontSize: 25 } }}
           InputLabelProps={{ style: { fontSize: 25 } }}
           onChange={(e) => {
@@ -251,6 +301,9 @@ export default function CreateProduct() {
           </Fab>
         </div>
       </Stack>
+      {errors.product_types && typeof errors.product_types === 'string' && (
+        <p style={{ color: 'red' }}>{errors.product_types}</p>
+      )}
       {productTypes.map((item, index) => (
         <Card
           sx={{ minWidth: 275 }}
@@ -287,6 +340,17 @@ export default function CreateProduct() {
                   variant="standard"
                   value={productTypes[index].type}
                   fullWidth
+                  error={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].type &&
+                    true
+                  }
+                  helperText={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].type
+                  }
                   onChange={(e) => {
                     handleProductTypesInput(e.target, index);
                   }}
@@ -299,6 +363,17 @@ export default function CreateProduct() {
                   variant="standard"
                   value={productTypes[index].label}
                   fullWidth
+                  error={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].label &&
+                    true
+                  }
+                  helperText={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].label
+                  }
                   onChange={(e) => {
                     handleProductTypesInput(e.target, index);
                   }}
@@ -325,6 +400,19 @@ export default function CreateProduct() {
                 <TextField
                   id="original"
                   type="number"
+                  error={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].price &&
+                    errors.product_types[index].price.original &&
+                    true
+                  }
+                  helperText={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].price &&
+                    errors.product_types[index].price.original
+                  }
                   label="Original price (in ₹)"
                   value={productTypes[index].price.original}
                   variant="standard"
@@ -338,6 +426,17 @@ export default function CreateProduct() {
                 <TextField
                   id="discount"
                   type="number"
+                  error={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].price.discount &&
+                    true
+                  }
+                  helperText={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].price.discount
+                  }
                   label="Discount amount (in ₹)"
                   value={productTypes[index].price.discount}
                   variant="standard"
@@ -358,6 +457,19 @@ export default function CreateProduct() {
                   id="stock"
                   type="number"
                   label="Stock"
+                  error={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].sku &&
+                    errors.product_types[index].sku.stock &&
+                    true
+                  }
+                  helperText={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].sku &&
+                    errors.product_types[index].sku.stock
+                  }
                   value={productTypes[index].sku.stock}
                   placeholder="Units available to be sold"
                   variant="standard"
@@ -381,6 +493,17 @@ export default function CreateProduct() {
                   value={productTypes[index].dimensions.height}
                   variant="standard"
                   fullWidth
+                  error={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions.height &&
+                    true
+                  }
+                  helperText={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions.height
+                  }
                   onChange={(e) => {
                     handleDimensionsInput(e.target, index);
                   }}
@@ -394,6 +517,17 @@ export default function CreateProduct() {
                   value={productTypes[index].dimensions.width}
                   variant="standard"
                   fullWidth
+                  error={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions.width &&
+                    true
+                  }
+                  helperText={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions.width
+                  }
                   onChange={(e) => {
                     handleDimensionsInput(e.target, index);
                   }}
@@ -407,6 +541,17 @@ export default function CreateProduct() {
                   value={productTypes[index].dimensions.length}
                   variant="standard"
                   fullWidth
+                  error={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions.length &&
+                    true
+                  }
+                  helperText={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions.length
+                  }
                   onChange={(e) => {
                     handleDimensionsInput(e.target, index);
                   }}
@@ -421,6 +566,17 @@ export default function CreateProduct() {
                   value={productTypes[index].dimensions.unit}
                   variant="standard"
                   fullWidth
+                  error={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions.unit &&
+                    true
+                  }
+                  helperText={
+                    errors.product_types &&
+                    typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions.unit
+                  }
                   onChange={(e) => {
                     handleDimensionsInput(e.target, index);
                   }}
@@ -438,15 +594,36 @@ export default function CreateProduct() {
           endIcon={<SendIcon />}
           style={{ marginTop: 20 }}
           onClick={(e) => {
-            const data = {
-              ...product,
-              product_types: productTypes
-            };
+            handleSubmitForm(e);
           }}
         >
           Submit
         </Button>
       </center>
+      {alertObject.status && (
+        <Alert
+          message={alertObject.msg}
+          key={alertObject.key}
+          update={updateAlertState}
+          type={alertObject.type}
+        />
+      )}
     </Container>
   );
 }
+
+CreateProduct.propTypes = {
+  newProduct: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProops = (state) => {
+  const props = {
+    errors: state.errors,
+    auth: state.auth
+  };
+  return props;
+};
+
+export default connect(mapStateToProops, { newProduct })(CreateProduct);

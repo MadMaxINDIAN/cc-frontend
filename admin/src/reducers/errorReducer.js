@@ -7,7 +7,7 @@ export default function(state = initialState,action){
     switch (action.type){
         case GET_ERRORS : {
             if (typeof action.payload === "string") {
-                return {unauthorized : "Unauthorized access denied"}
+                return {unauthorized : "Connection error or Access denied", key: Math.random()}
             }
             return action.payload;
     }
