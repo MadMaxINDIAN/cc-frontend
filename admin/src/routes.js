@@ -4,6 +4,7 @@ import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 import Login from './pages/Login';
+import CreateProduct from './components/_dashboard/products/NewProduct';
 import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
@@ -37,7 +38,11 @@ export default function Router() {
         { path: '*', element: <Navigate to="/404" /> }
       ]
     },
-
+    {
+      path: '/products',
+      element: <DashboardLayout />,
+      children: [{ path: 'new', element: <CreateProduct /> }]
+    },
     { path: '*', element: <Navigate to="/404" replace /> }
   ]);
 }

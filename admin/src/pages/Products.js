@@ -1,7 +1,11 @@
+import { Icon } from '@iconify/react';
+import plusFill from '@iconify/icons-eva/plus-fill';
+import { Link as RouterLink } from 'react-router-dom';
+// material
 import { useFormik } from 'formik';
 import { useState } from 'react';
 // material
-import { Container, Stack, Typography } from '@material-ui/core';
+import { Grid, Button, Container, Stack, Typography } from '@material-ui/core';
 // components
 import Page from '../components/Page';
 import {
@@ -49,9 +53,19 @@ export default function EcommerceShop() {
   return (
     <Page title="Dashboard: Products | Minimal-UI">
       <Container>
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Products
-        </Typography>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" sx={{ mb: 5 }}>
+            Products
+          </Typography>
+          <Button
+            variant="contained"
+            component={RouterLink}
+            to="#"
+            startIcon={<Icon icon={plusFill} />}
+          >
+            New Product
+          </Button>
+        </Stack>
 
         <Stack
           direction="row"
