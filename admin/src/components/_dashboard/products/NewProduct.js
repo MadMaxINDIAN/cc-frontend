@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Link as RouterLink } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 // material
 import {
@@ -72,7 +72,13 @@ function CreateProduct(props) {
     if (props.errors.errors) {
       setErrors({ ...props.errors.errors });
     }
-  }, [props.errors]);
+    if (props.auth.alert.key) {
+      setAlertObject({
+        ...props.auth.alert,
+        status: true
+      });
+    }
+  }, [props.errors, props.auth]);
 
   const updateAlertState = () => {
     setAlertObject({
@@ -113,7 +119,8 @@ function CreateProduct(props) {
       ...product,
       product_types: productTypes
     };
-    props.newProduct(data);
+    console.log(props)
+    // props.newProduct(data, props.history);
   };
 
   const handleProductInput = (target) => {
@@ -134,13 +141,13 @@ function CreateProduct(props) {
 
   const handleSKUInput = (target, index) => {
     const temp = productTypes;
-    temp[index].sku[target.id] = target.value;
+    temp[index].sku[target.id] = parseInt(target.value, 10);
     setProductTypes([...temp]);
   };
 
   const handleDimensionsInput = (target, index) => {
     const temp = productTypes;
-    temp[index].dimensions[target.id] = target.value;
+    temp[index].dimensions[target.id] = parseInt(target.value, 10);
     setProductTypes([...temp]);
   };
 
@@ -429,12 +436,14 @@ function CreateProduct(props) {
                   error={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].price &&
                     errors.product_types[index].price.discount &&
                     true
                   }
                   helperText={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].price &&
                     errors.product_types[index].price.discount
                   }
                   label="Discount amount (in ₹)"
@@ -496,12 +505,14 @@ function CreateProduct(props) {
                   error={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions &&
                     errors.product_types[index].dimensions.height &&
                     true
                   }
                   helperText={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions &&
                     errors.product_types[index].dimensions.height
                   }
                   onChange={(e) => {
@@ -520,12 +531,14 @@ function CreateProduct(props) {
                   error={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions &&
                     errors.product_types[index].dimensions.width &&
                     true
                   }
                   helperText={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions &&
                     errors.product_types[index].dimensions.width
                   }
                   onChange={(e) => {
@@ -544,12 +557,14 @@ function CreateProduct(props) {
                   error={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions &&
                     errors.product_types[index].dimensions.length &&
                     true
                   }
                   helperText={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions &&
                     errors.product_types[index].dimensions.length
                   }
                   onChange={(e) => {
@@ -569,12 +584,14 @@ function CreateProduct(props) {
                   error={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions &&
                     errors.product_types[index].dimensions.unit &&
                     true
                   }
                   helperText={
                     errors.product_types &&
                     typeof errors.product_types[index] === 'object' &&
+                    errors.product_types[index].dimensions &&
                     errors.product_types[index].dimensions.unit
                   }
                   onChange={(e) => {
@@ -608,6 +625,7 @@ function CreateProduct(props) {
           type={alertObject.type}
         />
       )}
+      
     </Container>
   );
 }
@@ -626,4 +644,4 @@ const mapStateToProops = (state) => {
   return props;
 };
 
-export default connect(mapStateToProops, { newProduct })(CreateProduct);
+export default connect(mapStateToProops, { newProduct })(withRouter(CreateProduct));

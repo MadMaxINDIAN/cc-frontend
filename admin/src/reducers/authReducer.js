@@ -1,9 +1,10 @@
-import { SET_CURRENT_USER, SET_CURRENT_ADMIN, SET_CURRENT_MANAGER } from "../actions/type";
+import { SET_CURRENT_USER, SET_ALERT } from "../actions/type";
 import isEmpty from "../utils/isEmpty";
 
 const initialState ={
     isAuthenticated :false,
     user : {},
+    alert: {}
 }
 
 export default function(state = initialState,action){
@@ -14,6 +15,11 @@ export default function(state = initialState,action){
             isAuthenticated: !isEmpty(action.payload),
             user : action.payload
         }
+        case SET_ALERT:
+            return {
+                ...state,
+                alert: action.payload,
+            }
         default:
             return state;
     }
