@@ -1,7 +1,7 @@
 import { post } from "../utils/api";
 import { GET_ERRORS, SET_ALERT } from "./type";
 
-export const newProduct = (productData, history) => async dispatch => {
+export const newProduct = (productData, navigate) => async dispatch => {
 
     const res = await post("/auth/products/new", productData, {})
     const {status} = res;
@@ -20,5 +20,6 @@ export const newProduct = (productData, history) => async dispatch => {
                 key: Math.random()
             }
         })
+        navigate("/");
     }
 }

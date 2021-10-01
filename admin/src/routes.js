@@ -1,11 +1,10 @@
-import { useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
-import IntitialLoader from './components/IntialLoader';
 //
 import Login from './pages/Login';
-import CreateProduct from './components/_dashboard/products/NewProduct';
+import NewProduct from './components/_dashboard/products/NewProduct';
 import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
@@ -21,7 +20,7 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { path: '/', element: <IntitialLoader /> },
+        { path: '/', element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
         { path: 'products', element: <Products /> },
@@ -42,7 +41,9 @@ export default function Router() {
     {
       path: '/products',
       element: <DashboardLayout />,
-      children: [{ path: 'new', element: <CreateProduct /> }]
+      children: [
+        { path: 'new', element: <NewProduct /> }
+      ]
     },
     { path: '*', element: <Navigate to="/404" replace /> }
   ]);

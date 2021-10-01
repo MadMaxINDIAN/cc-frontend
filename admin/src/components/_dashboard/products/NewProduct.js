@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 // material
 import {
   Container,
@@ -50,6 +49,7 @@ CreateProduct.propTypes = {
 };
 
 function CreateProduct(props) {
+  const navigate = useNavigate();
   const [product, setProduct] = useState({
     title: '',
     category: '',
@@ -119,8 +119,7 @@ function CreateProduct(props) {
       ...product,
       product_types: productTypes
     };
-    console.log(props)
-    // props.newProduct(data, props.history);
+    props.newProduct(data, navigate);
   };
 
   const handleProductInput = (target) => {
@@ -644,4 +643,4 @@ const mapStateToProops = (state) => {
   return props;
 };
 
-export default connect(mapStateToProops, { newProduct })(withRouter(CreateProduct));
+export default connect(mapStateToProops, { newProduct })(CreateProduct);
