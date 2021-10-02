@@ -8,6 +8,7 @@ import Page from '../components/Page';
 import { BlogPostCard, BlogPostsSort, BlogPostsSearch } from '../components/_dashboard/blog';
 //
 import POSTS from '../_mocks_/blog';
+import routes from "../utils/RouteConstant";
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +31,7 @@ export default function Blog() {
           <Button
             variant="contained"
             component={RouterLink}
-            to="#"
+            to={routes.newBlog}
             startIcon={<Icon icon={plusFill} />}
           >
             New Post

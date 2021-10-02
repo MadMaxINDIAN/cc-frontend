@@ -1,9 +1,9 @@
 import { post } from "../utils/api";
 import { GET_ERRORS, SET_ALERT } from "./type";
 
-export const newProduct = (productData, navigate) => async dispatch => {
+export const newBlogPost = (productData, navigate) => async dispatch => {
 
-    const res = await post("/products/new", productData, {})
+    const res = await post("/blog/new", productData, {})
     const {status} = res;
 
     if (status >= 400) {
