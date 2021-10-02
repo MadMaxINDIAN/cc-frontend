@@ -31,22 +31,22 @@ const sidebarConfig = [
     title: 'blog',
     path: '/dashboard/blog',
     icon: getIcon(fileTextFill)
-  },
-  {
-    title: 'login',
-    path: '/login',
-    icon: getIcon(lockFill)
-  },
-  {
-    title: 'register',
-    path: '/register',
-    icon: getIcon(personAddFill)
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: getIcon(alertTriangleFill)
   }
+  // {
+  //   title: 'login',
+  //   path: '/login',
+  //   icon: getIcon(lockFill)
+  // },
+  // {
+  //   title: 'register',
+  //   path: '/register',
+  //   icon: getIcon(personAddFill)
+  // },
+  // {
+  //   title: 'Not found',
+  //   path: '/404',
+  //   icon: getIcon(alertTriangleFill)
+  // }
 ];
 
 export default sidebarConfig;

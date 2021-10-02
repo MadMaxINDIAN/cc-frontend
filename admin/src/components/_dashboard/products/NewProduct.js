@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Container,
@@ -20,7 +20,7 @@ import {
 import { styled } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import SendIcon from '@material-ui/icons/Send';
-import RemoveCircleTwoToneIcon from '@mui/icons-material/RemoveCircleTwoTone';
+import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import FiberNewOutlinedIcon from '@material-ui/icons/FiberNewOutlined';
 import Masonry from '@mui/lab/Masonry';
@@ -28,10 +28,7 @@ import MasonryItem from '@mui/lab/MasonryItem';
 // utils
 import Alert from '../../Alert';
 import { newProduct } from '../../../actions/productActions';
-import { fCurrency } from '../../../utils/formatNumber';
-//
-import Label from '../../Label';
-import ColorPreview from '../../ColorPreview';
+import routes from "../../../utils/RouteConstant";
 // ----------------------------------------------------------------------
 
 const ProductImgStyle = styled('img')({
@@ -88,8 +85,8 @@ function CreateProduct(props) {
   };
 
   const addNewProductType = () => {
-    if (typeof errors.product_types === "string") {
-      setErrors({...errors, product_types: ""});
+    if (typeof errors.product_types === 'string') {
+      setErrors({ ...errors, product_types: '' });
     }
     setProductTypes([
       ...productTypes,
@@ -113,6 +110,10 @@ function CreateProduct(props) {
       }
     ]);
   };
+
+  const handleCancelForm = (e) => {
+    navigate(routes.products);
+  }
 
   const handleSubmitForm = (e) => {
     const data = {
@@ -154,10 +155,10 @@ function CreateProduct(props) {
     const temp = productTypes;
     temp.splice(index, 1);
     setProductTypes([...temp]);
-    if (typeof errors.product_types === "object") {
+    if (typeof errors.product_types === 'object') {
       const t = errors.product_types;
       t.splice(index, 1);
-      setErrors({...errors, product_types: t});
+      setErrors({ ...errors, product_types: t });
     }
   };
 
@@ -605,6 +606,18 @@ function CreateProduct(props) {
       <center>
         <Button
           variant="contained"
+          color="error"
+          size="large"
+          startIcon={<ClearRoundedIcon />}
+          style={{ marginTop: 20,marginRight: 20 }}
+          onClick={(e) => {
+            handleCancelForm(e);
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
           color="success"
           size="large"
           endIcon={<SendIcon />}
@@ -624,7 +637,6 @@ function CreateProduct(props) {
           type={alertObject.type}
         />
       )}
-      
     </Container>
   );
 }

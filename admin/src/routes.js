@@ -1,4 +1,4 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes, Outlet } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
@@ -22,8 +22,11 @@ export default function Router() {
       children: [
         { path: '/', element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
-        { path: 'products', element: <Products /> },
+        { path: 'user', element: <User />},
+        { path: 'products', element: <div><Outlet /></div>, children: [
+          {path: "/", element: <Products />},
+          {path: "/new", element: <NewProduct />},
+        ] },
         { path: 'blog', element: <Blog /> }
       ]
     },
@@ -41,9 +44,7 @@ export default function Router() {
     {
       path: '/products',
       element: <DashboardLayout />,
-      children: [
-        { path: 'new', element: <NewProduct /> }
-      ]
+      children: [{ path: 'new', element: <NewProduct /> }]
     },
     { path: '*', element: <Navigate to="/404" replace /> }
   ]);
