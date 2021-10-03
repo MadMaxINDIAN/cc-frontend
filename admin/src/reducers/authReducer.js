@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER, SET_ALERT } from "../actions/type";
+import { SET_CURRENT_USER, SET_ALERT, LOGOUT_USER } from "../actions/type";
 import isEmpty from "../utils/isEmpty";
 
 const initialState ={
@@ -20,6 +20,17 @@ export default function(state = initialState,action){
                 ...state,
                 alert: action.payload,
             }
+        case LOGOUT_USER:
+        return {
+            ...state,
+            isAuthenticated: false,
+            user: {},
+            alert: {
+                type: "success",
+                msg: "Admin logged out",
+                key: Math.random()
+            }
+        }
         default:
             return state;
     }

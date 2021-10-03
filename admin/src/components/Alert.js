@@ -21,7 +21,7 @@ export default function AlertMassage({ message, update, type }) {
       <Snackbar
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'left'
+          horizontal: 'right'
         }}
         open={open}
         autoHideDuration={4000}

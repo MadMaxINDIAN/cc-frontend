@@ -1,3 +1,5 @@
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
 import homeFill from '@iconify/icons-eva/home-fill';
@@ -11,6 +13,7 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 import MenuPopover from '../../components/MenuPopover';
 //
 import account from '../../_mocks_/account';
+import { logoutAdmin } from "../../actions/authActions";
 
 // ----------------------------------------------------------------------
 
@@ -34,7 +37,7 @@ const MENU_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
+function AccountPopover(props) {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
 
@@ -110,7 +113,9 @@ export default function AccountPopover() {
         ))}
 
         <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button fullWidth color="inherit" variant="outlined">
+          <Button fullWidth color="inherit" variant="outlined" onClick={(e) => {
+            props.logoutAdmin();
+          }}>
             Logout
           </Button>
         </Box>
@@ -118,3 +123,19 @@ export default function AccountPopover() {
     </>
   );
 }
+
+AccountPopover.propTypes = {
+  logoutAdmin: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProops = (state) => {
+  const props = {
+    errors: state.errors,
+    auth: state.auth
+  };
+  return props;
+};
+
+export default connect(mapStateToProops, {logoutAdmin})(AccountPopover);

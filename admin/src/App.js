@@ -6,7 +6,7 @@ import ThemeConfig from './theme';
 // components
 import ScrollToTop from './components/ScrollToTop';
 import store from './store';
-
+import Alert from "./Alert";
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -14,6 +14,7 @@ export default function App() {
     <Provider store={store}>
       <ThemeConfig>
         <ScrollToTop />
+        <Alert />
         <Router />
       </ThemeConfig>
     </Provider>

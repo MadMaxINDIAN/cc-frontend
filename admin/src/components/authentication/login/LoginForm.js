@@ -1,9 +1,12 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
 import {
@@ -13,19 +16,28 @@ import {
   TextField,
   IconButton,
   InputAdornment,
-  FormControlLabel
+  FormControlLabel,
+  Typography
 } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
+import { loginAdmin } from "../../../actions/authActions";
 
 // ----------------------------------------------------------------------
 
-export default function LoginForm() {
+function LoginForm(props) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    if (props.auth.isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [props.auth]);
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required')
+    .min(8, "Password is too short")
+    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, "Must satisfy all the conditions")
   });
 
   const formik = useFormik({
@@ -35,8 +47,9 @@ export default function LoginForm() {
       remember: true
     },
     validationSchema: LoginSchema,
-    onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+    onSubmit: (data, actions) => {
+      props.loginAdmin(data, navigate);
+      actions.setSubmitting(false);
     }
   });
 
@@ -101,6 +114,27 @@ export default function LoginForm() {
           Login
         </LoadingButton>
       </Form>
+      <br />
+      <Typography sx={{ color: 'text.secondary', fontSize: "medium", marginLeft: "auto", marginRight: "auto" }}><FiberManualRecordIcon color="success" style={{fontSize: 14}} /> Password should contain 1 capital letter.</Typography>
+      <Typography sx={{ color: 'text.secondary', fontSize: "medium", marginLeft: "auto", marginRight: "auto" }}><FiberManualRecordIcon color="success" style={{fontSize: 14}} /> Password should contain 1 number.</Typography>
+      <Typography sx={{ color: 'text.secondary', fontSize: "medium", marginLeft: "auto", marginRight: "auto" }}><FiberManualRecordIcon color="success" style={{fontSize: 14}} /> Password should contain 1 small letter.</Typography>
+      <Typography sx={{ color: 'text.secondary', fontSize: "medium", marginLeft: "auto", marginRight: "auto" }}><FiberManualRecordIcon color="success" style={{fontSize: 14}} /> Password should contain 1 special character.</Typography>
     </FormikProvider>
   );
 }
+
+LoginForm.propTypes = {
+  loginAdmin: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProops = (state) => {
+  const props = {
+    errors: state.errors,
+    auth: state.auth
+  };
+  return props;
+};
+
+export default connect(mapStateToProops, {loginAdmin})(LoginForm);

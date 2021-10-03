@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Outlet, useNavigate } from 'react-router-dom';
 // material
 import { styled } from '@material-ui/core/styles';
 //
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
-
 // ----------------------------------------------------------------------
 
 const APP_BAR_MOBILE = 64;
@@ -32,8 +33,15 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout() {
+function DashboardLayout(props) {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!props.auth.isAuthenticated) {
+      navigate("/login")
+    }
+  }, [props.auth])
 
   return (
     <RootStyle>
@@ -45,3 +53,18 @@ export default function DashboardLayout() {
     </RootStyle>
   );
 }
+
+DashboardLayout.propTypes = {
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProops = (state) => {
+  const props = {
+    errors: state.errors,
+    auth: state.auth
+  };
+  return props;
+};
+
+export default connect(mapStateToProops, {})(DashboardLayout);

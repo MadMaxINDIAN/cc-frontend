@@ -26,7 +26,6 @@ import FiberNewOutlinedIcon from '@material-ui/icons/FiberNewOutlined';
 import Masonry from '@mui/lab/Masonry';
 import MasonryItem from '@mui/lab/MasonryItem';
 // utils
-import Alert from '../../Alert';
 import TextEditor from "../../../utils/TextEditor";
 import { newBlogPost } from '../../../actions/blogActions';
 import routes from "../../../utils/RouteConstant";
@@ -51,34 +50,12 @@ function CreateBlogPost(props) {
   });
   const [errors, setErrors] = useState({});
   const [images, setImges] = useState([]);
-  const [alertObject, setAlertObject] = useState({ status: false, msg: '', key: '' });
 
   useEffect(() => {
-    if (props.errors.unauthorized) {
-      setAlertObject({
-        status: true,
-        msg: props.errors.unauthorized,
-        key: Math.random(),
-        type: 'error'
-      });
-    }
     if (props.errors.errors) {
       setErrors({ ...props.errors.errors });
     }
-    if (props.auth.alert.key) {
-      setAlertObject({
-        ...props.auth.alert,
-        status: true
-      });
-    }
   }, [props.errors, props.auth]);
-
-  const updateAlertState = () => {
-    setAlertObject({
-      status: false,
-      msg: ''
-    });
-  };
 
   const handleCancelForm = (e) => {
     navigate(routes.blogs);
@@ -240,14 +217,6 @@ function CreateBlogPost(props) {
           Submit
         </Button>
       </center>
-      {alertObject.status && (
-        <Alert
-          message={alertObject.msg}
-          key={alertObject.key}
-          update={updateAlertState}
-          type={alertObject.type}
-        />
-      )}
     </Container>
   );
 }

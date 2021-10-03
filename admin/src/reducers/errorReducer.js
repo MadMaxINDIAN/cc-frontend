@@ -8,7 +8,7 @@ export default function(state = initialState,action){
         case GET_ERRORS : {
             console.log(action.payload);
             if (typeof action.payload === "string") {
-                return {unauthorized : "Connection error or Access denied", key: Math.random()}
+                return {unauthorized : "Access denied or Internal server error", key: Math.random()}
             }
             return action.payload;
     }
