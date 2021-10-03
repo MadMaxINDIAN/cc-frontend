@@ -45,3 +45,10 @@ export const loginAdmin = (data, navigate) => async dispatch => {
         navigate("/");
     }
 }
+
+export const resetAlert = () => dispatch => {
+    dispatch({
+        type: SET_ALERT,
+        payload: {}
+    })
+}

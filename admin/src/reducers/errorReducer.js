@@ -6,7 +6,6 @@ const initialState ={}
 export default function(state = initialState,action){
     switch (action.type){
         case GET_ERRORS : {
-            console.log(action.payload);
             if (typeof action.payload === "string") {
                 return {unauthorized : "Access denied or Internal server error", key: Math.random()}
             }
