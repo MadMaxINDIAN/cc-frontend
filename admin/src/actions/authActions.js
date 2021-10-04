@@ -1,4 +1,5 @@
 import jwt from "jwt-decode";
+import setAuthToken from "../utils/setAuthToken";
 import { post } from "../utils/api";
 import { GET_ERRORS, SET_ALERT, LOGOUT_USER, SET_CURRENT_USER } from "./type";
 
@@ -37,6 +38,7 @@ export const loginAdmin = (data, navigate) => async dispatch => {
                 key: Math.random()
             }
         })
+        setAuthToken(res.data.token);
         const decoded = jwt(res.data.token);
         dispatch({
             type: SET_CURRENT_USER,

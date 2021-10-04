@@ -1,3 +1,5 @@
+import setAuthToken from "./setAuthToken";
+
 class StateLoader {
 
     loadState() {
@@ -7,8 +9,11 @@ class StateLoader {
             if (serializedState === null) {
                 return this.initializeState();
             }
-
-            return JSON.parse(serializedState);
+            const data = JSON.parse(serializedState);
+            if (data.auth.isAuthenticated) {
+                setAuthToken(data.auth.user.token);
+            }
+            return data;
         }
         catch (err) {
             return this.initializeState();

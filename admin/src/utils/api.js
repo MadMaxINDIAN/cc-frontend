@@ -7,4 +7,13 @@ export const post = (url, data, headers) =>
     .catch((err) => {
       const res = err.response;
       return res;
+    });
+
+export const get = (url, headers) =>
+  axios
+    .get(`${url}`)
+    .then((res) => res)
+    .catch((err) => {
+      const res = err.response;
+      return res;
     })

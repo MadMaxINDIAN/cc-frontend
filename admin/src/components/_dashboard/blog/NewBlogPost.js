@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
@@ -25,9 +25,10 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import FiberNewOutlinedIcon from '@material-ui/icons/FiberNewOutlined';
 import Masonry from '@mui/lab/Masonry';
 import MasonryItem from '@mui/lab/MasonryItem';
+import ChipSelect from "../../ChipSelect";
 // utils
 import TextEditor from "../../../utils/TextEditor";
-import { newBlogPost } from '../../../actions/blogActions';
+import { newBlogPost, getTags } from '../../../actions/blogActions';
 import routes from "../../../utils/RouteConstant";
 // ----------------------------------------------------------------------
 
@@ -43,6 +44,7 @@ const ProductImgStyle = styled('img')({
 
 function CreateBlogPost(props) {
   const navigate = useNavigate();
+  const tags = useRef([]);
   const [blog, setBlog] = useState({
     title: '',
     content: '',
@@ -55,7 +57,11 @@ function CreateBlogPost(props) {
     if (props.errors.errors) {
       setErrors({ ...props.errors.errors });
     }
-  }, [props.errors, props.auth]);
+  }, [props.errors]);
+
+  useEffect(() => {
+    props.getTags(tags);
+  }, [])
 
   const handleCancelForm = (e) => {
     navigate(routes.blogs);
@@ -123,6 +129,8 @@ function CreateBlogPost(props) {
           }}
         />
       </Stack>
+      <br />
+      {tags.current.length && <ChipSelect option={tags.current} />}
       <br />
       <Stack direction="row" spacing={{ xs: 1, sm: 2, md: 4 }}>
         <p style={{ fontSize: 25 }}>Blog Image</p>
@@ -222,6 +230,7 @@ function CreateBlogPost(props) {
 }
 
 CreateBlogPost.propTypes = {
+  getTags: PropTypes.func.isRequired,
   newBlogPost: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
@@ -235,4 +244,4 @@ const mapStateToProops = (state) => {
   return props;
 };
 
-export default connect(mapStateToProops, { newBlogPost })(CreateBlogPost);
+export default connect(mapStateToProops, { newBlogPost, getTags })(CreateBlogPost);
