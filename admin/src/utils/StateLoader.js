@@ -13,6 +13,7 @@ class StateLoader {
             if (data.auth.isAuthenticated) {
                 setAuthToken(data.auth.user.token);
             }
+            data.errors = {};
             return data;
         }
         catch (err) {

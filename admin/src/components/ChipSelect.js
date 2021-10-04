@@ -43,7 +43,6 @@ function getStyles(name, personName, theme) {
 
 export default function MultipleSelectChip(props) {
   const theme = useTheme();
-  console.log(props.option);
   const [personName, setPersonName] = React.useState([]);
   const handleChange = (event) => {
     const {
@@ -53,6 +52,7 @@ export default function MultipleSelectChip(props) {
       // On autofill we get a the stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
+    props.update(typeof value === 'string' ? value.split(',') : value);
   };
 
   return (

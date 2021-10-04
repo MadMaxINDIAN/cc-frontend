@@ -44,11 +44,12 @@ const ProductImgStyle = styled('img')({
 
 function CreateBlogPost(props) {
   const navigate = useNavigate();
-  const tags = useRef([]);
+  const [tags, setTags] = useState([]);
   const [blog, setBlog] = useState({
     title: '',
     content: '',
-    description: ''
+    description: '',
+    tags: ''
   });
   const [errors, setErrors] = useState({});
   const [images, setImges] = useState([]);
@@ -60,7 +61,7 @@ function CreateBlogPost(props) {
   }, [props.errors]);
 
   useEffect(() => {
-    props.getTags(tags);
+    props.getTags(setTags);
   }, [])
 
   const handleCancelForm = (e) => {
@@ -74,6 +75,10 @@ function CreateBlogPost(props) {
   const handleBlogInput = (target) => {
     setBlog({ ...blog, [target.id]: target.value });
   };
+
+  const handleTagChange = (value) => {
+    setBlog({...blog, tags: JSON.stringify(value)})
+  }
 
   const handleContentChange = (value) => {
       setBlog({...blog, content: value});
@@ -130,7 +135,8 @@ function CreateBlogPost(props) {
         />
       </Stack>
       <br />
-      {tags.current.length && <ChipSelect option={tags.current} />}
+      {tags.length && <ChipSelect option={tags} update={handleTagChange} />}
+      {errors.tags && <Stack style={{color: "red"}}>* {errors.tags} *</Stack>}
       <br />
       <Stack direction="row" spacing={{ xs: 1, sm: 2, md: 4 }}>
         <p style={{ fontSize: 25 }}>Blog Image</p>

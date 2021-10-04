@@ -40,6 +40,7 @@ export const loginAdmin = (data, navigate) => async dispatch => {
         })
         setAuthToken(res.data.token);
         const decoded = jwt(res.data.token);
+        decoded.token = res.data.token
         dispatch({
             type: SET_CURRENT_USER,
             payload: decoded

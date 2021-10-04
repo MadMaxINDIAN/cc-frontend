@@ -24,7 +24,7 @@ export const newBlogPost = (productData, navigate) => async dispatch => {
     }
 }
 
-export const getTags = (tags) => async dispatch => {
+export const getTags = (setTags) => async dispatch => {
 
     const res = await get("/blog/tags", {});
     const {status} = res;
@@ -39,6 +39,6 @@ export const getTags = (tags) => async dispatch => {
             }
         })
     } else {
-        tags.current = res.data.tags;
+        setTags(res.data.tags);
     }
 } 
