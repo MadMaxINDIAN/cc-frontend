@@ -7,7 +7,7 @@ import AlertComponent from "./components/Alert";
 const Alert = (props) => {
   const [alertObject, setAlertObject] = useState({ status: false, msg: '', key: '' });
   useEffect(() => {
-    if (props.auth.alert.key) {
+    if (props?.auth?.alert?.key) {
       setAlertObject({
         ...props.auth.alert,
         status: true
